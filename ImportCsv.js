@@ -7,5 +7,6 @@ function yearFilter(min, max) {
 d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv",function(data){dataset=data;
 var years = yearFilter(1970, 1980);
 dataset = dataset.filter(years);
-console.log(dataset);
+d3.select("body").selectAll("p").data(dataset).enter().append("p").text(function(d){return d.POPULATION});
+
 });
