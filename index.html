@@ -9,8 +9,15 @@
     }
 </style>
 <body>
-<!--<div id="borderdiv"></div>-->
-<script src="Testchain.js"></script>
+<form>
+    <span><input id="minYear" type="range" min="1975" max="2010" onchange="setMinValue('minYear','p1')">
+    <input id="maxYear" type="range" min="1975" max="2010" onchange="setMaxValue('maxYear','p2')">
+</span>
+</form>
+<label id="p1"></label>
+<label id="p2"></label>
 
+<!--<div id="borderdiv"></div>-->
+<script src="ImportCsv.js"></script>
 </body>
 </html>

@@ -5,9 +5,14 @@ function minMaxFilter(min, max) {
         if (x < max && x > min) return x
     }
 };
-var func1 = minMaxFilter(2, 30);
+function yearFilter(min, max) {
+    return function (x) {
+        if (x.YEAR < max && x.YEAR > min) return x
+    }
+};
+/*var func1 = yearFilter(1970, 1980);
 var func2 = minMaxFilter(10, 40);
 
 var endArray1 = startArray.filter(func1);
 var endArray2 = startArray.filter(func2);
-console.log(func1.toString());
+console.log(func1.toString());*/
