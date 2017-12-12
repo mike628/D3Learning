@@ -38,10 +38,10 @@ function settimespanandrun() {
     d3.select("body").selectAll("p").data(yearFilterDataSet).enter().append("p").text(function (d) {
         return d.YEAR + " " + d.POPULATION
     });
-
+}
     function update() {
         d3.select("body").selectAll("p").data(yearFilterDataSet).enter().append("p").text(function (d) {
             return d.YEAR + " " + d.POPULATION
-    }
+
 
 }
