@@ -8,7 +8,7 @@ function yearFilter(min, max) {
 d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) {
     dataset = data;
 
-// d3.select("body").selectAll("p").data(dataset).enter().append("p").text(function(d){return d.POPULATION});
+d3.select("body").selectAll("p").data(dataset).enter().append("p").text(function(d){return d.YEAR + " " + d.POPULATION});
 
 });
 
@@ -28,20 +28,23 @@ window.onload = function () {
     setMinValue('minYear', 'p1');
     setMaxValue('maxYear', 'p2');
 }
-document.getElementById("clickMe").onclick = settimespanandrun;
+document.getElementById("clickMe").onclick = update;
 
 function settimespanandrun() {
     var firstYear = parseInt(minYear.value);
     var lastYear = parseInt(maxYear.value);
     var years = yearFilter(firstYear, lastYear);
-    var yearFilterDataSet = dataset.filter(years);
-    d3.select("body").selectAll("p").data(yearFilterDataSet).enter().append("p").text(function (d) {
-        return d.YEAR + " " + d.POPULATION
-    });
-}
+     var yearFilterDataSet = dataset.filter(years);
+     return yearFilterDataSet;
+
+    };
+
     function update() {
-        d3.select("body").selectAll("p").data(yearFilterDataSet).enter().append("p").text(function (d) {
-            return d.YEAR + " " + d.POPULATION
+
+        var newdataset = settimespanandrun();
+        var newData = d3.select("body").selectAll("p").data(newdataset);
+        newData.enter().append("p").text(function (d) {return d.YEAR + " " + d.POPULATION})
+        newData.exit().remove();
 
 
-}
+    }
