@@ -9,7 +9,7 @@ d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) 
     dataset = data;
 
 d3.select("body").selectAll("p").data(dataset).enter().append("p").text(function(d){return d.YEAR + " " + d.POPULATION});
-
+    createCheckBoxes();
 });
 
 function setMinValue(minYear, p1) {
@@ -51,3 +51,25 @@ function settimespanandrun() {
 // Remove extra data
         newData.exit().remove();
     }
+
+var createCheckBoxes = function(){
+    var form = document.createElement("form");
+    for (var property in dataset[0]) {
+        if (dataset[0].hasOwnProperty(property)) {
+            var checkbox = document.createElement('input');
+            checkbox.type = "checkbox";
+            checkbox.name = property;
+            checkbox.value = property;
+            checkbox.id = property;
+            var label = document.createElement('label')
+            label.htmlFor = checkbox.id;
+            label.appendChild(document.createTextNode(checkbox.name));
+
+            form.appendChild(checkbox);
+            form.appendChild(label);
+            var currentDiv = document.getElementById("clickMe");
+            document.body.insertBefore(form, null);
+            console.log(property)
+        }
+    }
+}
