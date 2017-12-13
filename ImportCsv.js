@@ -41,9 +41,11 @@ function settimespanandrun() {
 
     function update() {
 
-        var newdataset = settimespanandrun();
-        var newData = d3.select("body").selectAll("p").data(newdataset);
+// update old data
+        newData.text(function (d) {return d.YEAR + " " + d.POPULATION});
+// insert new data
         newData.enter().append("p").text(function (d) {return d.YEAR + " " + d.POPULATION})
+// Remove extra data
         newData.exit().remove();
 
 
