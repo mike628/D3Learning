@@ -47,6 +47,4 @@ function settimespanandrun() {
         newData.enter().append("p").text(function (d) {return d.YEAR + " " + d.POPULATION})
 // Remove extra data
         newData.exit().remove();
-
-
     }
