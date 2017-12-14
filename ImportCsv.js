@@ -53,7 +53,7 @@ function settimespanandrun() {
     }
 
 var createCheckBoxes = function(){
-    var form = document.createElement("form");
+    var form = document.createElement("form1");
     for (var property in dataset[0]) {
         if (dataset[0].hasOwnProperty(property)) {
             var checkbox = document.createElement('input');
@@ -64,12 +64,13 @@ var createCheckBoxes = function(){
             var label = document.createElement('label')
             label.htmlFor = checkbox.id;
             label.appendChild(document.createTextNode(checkbox.name));
-
-            form.appendChild(checkbox);
             form.appendChild(label);
-            var currentDiv = document.getElementById("clickMe");
-            document.body.insertBefore(form, null);
-            console.log(property)
+            form.appendChild(checkbox);
+
         }
     }
+    var parentDiv = document.getElementById("childElement").parentNode;
+    var sp2 = document.getElementById("childElement");
+    parentDiv.insertBefore(form, sp2);
+    console.log(property)
 }

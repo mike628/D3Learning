@@ -1,12 +1,17 @@
 <!doctype html>
 <html>
+<link rel="stylesheet" href="css/bootstrap.css">
 <script src="http://d3js.org/d3.v4.js" charset="utf-8"></script>
 
 <body>
+<div id="parentElement" class="form-check">
+    <span id="childElement">foo bar</span>
+</div>
 <form>
     <fieldset>
         <legend>Year</legend>
         <span>
+
             <input id="clickMe" type="button" value="clickme"/>
             <<input id="minYear" type="range" min="1975" max="2010" onchange="setMinValue('minYear','p1')">
             <label id="p1"></label>
