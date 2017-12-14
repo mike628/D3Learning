@@ -51,9 +51,10 @@ function settimespanandrun() {
 // Remove extra data
         newData.exit().remove();
     }
-
+//TODO Remove Form and add parameters - classes for label and Checkbox
 var createCheckBoxes = function(){
-    var form = document.createElement("form1");
+    var checkboxGroup = document.createElement("div");
+    checkboxGroup.className="SmallRed container-fluid";
     for (var property in dataset[0]) {
         if (dataset[0].hasOwnProperty(property)) {
             var checkbox = document.createElement('input');
@@ -64,13 +65,13 @@ var createCheckBoxes = function(){
             var label = document.createElement('label')
             label.htmlFor = checkbox.id;
             label.appendChild(document.createTextNode(checkbox.name));
-            form.appendChild(label);
-            form.appendChild(checkbox);
+            checkboxGroup.appendChild(label);
+            checkboxGroup.appendChild(checkbox);
 
         }
     }
     var parentDiv = document.getElementById("childElement").parentNode;
     var sp2 = document.getElementById("childElement");
-    parentDiv.insertBefore(form, sp2);
+    parentDiv.insertBefore(checkboxGroup, sp2);
     console.log(property)
 }
