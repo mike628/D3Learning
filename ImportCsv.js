@@ -1,19 +1,6 @@
 var dataset;
 var treeData;
-(function loadJSON(callback) {
 
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType("application/json");
-    xobj.open('GET', 'js/data.json', true); // Replace 'my_data' with the path to your file
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == "200") {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            treeData = JSON.parse(xobj.response);
-            createCheckBoxes(treeData);
-        }
-    };
-    xobj.send(null);
-})()
 
 function yearFilter(min, max) {Hmmm
     return function (x) {
@@ -25,8 +12,9 @@ d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) 
 
     d3.select("body").selectAll("p").data(dataset).enter().append("p").text(function (d) {
         return d.YEAR + " " + d.POPULATION
-    });
 
+    });
+    barChart();
 });
 
 function setMinValue(minYear, p1) {
@@ -117,4 +105,24 @@ var createCheckBoxes = function (treeData) {
     var sp2 = document.getElementById("afterCheckboxes");
     parentDiv.insertBefore(checkboxGroup, sp2);
     console.log(property)
+}
+var w = 500;
+var h = 500;
+var barPadding =1;
+var barChart = function()
+{
+    var svg = d3.select("body").append("svg");
+    svg.attr("width",w).attr("height",h);
+    svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x",function(d,i){return i*(w/dataset.length);})
+        .attr("height",function (d){return d.RAPE*4;})
+        .attr("width",w/dataset.length-barPadding)
+        .attr("y",function (d) {return h-d.RAPE*4;})
+
+
+
+
 }
