@@ -121,8 +121,17 @@ var barChart = function()
         .attr("height",function (d){return d.RAPE*4;})
         .attr("width",w/dataset.length-barPadding)
         .attr("y",function (d) {return h-d.RAPE*4;})
-
-
-
-
 }
+ var barChart = new BarChart(d)
+function BarChart(d){};
+BarChart.prototype =
+    {
+
+        barPadding: 5,
+        barheight: function (d) {
+            return d
+        },
+        barWidth: function (dataset) {
+            return w / dataset.length - this.barPadding
+        },
+    }
