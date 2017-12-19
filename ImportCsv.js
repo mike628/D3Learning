@@ -101,6 +101,44 @@ var createCheckBoxes = function (treeData) {
 
         }
     }
+    var createRadio = function (treeData) {
+        var radioGroup = document.createElement("div");
+        radioGroup.className = "radioGroup";
+        var x = 0;
+        var radioColumn = document.createElement("div");
+        radioColumn.className = "radioColumn";
+
+        for (var property in dataset[0]) {
+            if (dataset[0].hasOwnProperty(property)) {
+
+                var radioLineItem = document.createElement("div");
+                // Create radioes for each Field
+                var radio = document.createElement('input');
+                radio.type = "radio";
+                radio.name = property;
+                radio.value = property;
+                radio.id = property;
+                radio.className = "form-check-input"
+                radio.onclick = function(){console.log(this.id)};
+                // Create Label for Each radio
+                var label = document.createElement('label')
+                label.htmlFor = radio.id;
+                label.appendChild(document.createTextNode(radio.name));
+                radioLineItem.appendChild(radio);
+                radioLineItem.appendChild(label);
+                x++;
+
+                radioColumn.appendChild(radioLineItem);
+                radioGroup.appendChild(radioColumn);
+                if (x >= treeData.rows) {
+                    radioColumn = document.createElement("div");
+                    radioColumn.className = "radioColumn";
+                    x = 0;
+                }
+
+
+            }
+        }
     var parentDiv = document.getElementById("afterCheckboxes").parentNode;
     var sp2 = document.getElementById("afterCheckboxes");
     parentDiv.insertBefore(checkboxGroup, sp2);
@@ -122,6 +160,7 @@ var barChart = function()
         .attr("width",w/dataset.length-barPadding)
         .attr("y",function (d) {return h-d.RAPE*4;})
 }
+
  var barChart = new BarChart(d)
 function BarChart(d){};
 BarChart.prototype =
