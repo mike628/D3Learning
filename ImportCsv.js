@@ -71,7 +71,7 @@ var createCheckBoxes = function (treeData) {
 
             checkboxColumn.appendChild(checkboxLineItem);
             checkboxGroup.appendChild(checkboxColumn);
-           if (x >= treeData.rows) {
+           if (x >= treeData) {
                 checkboxColumn = document.createElement("div");
                 checkboxColumn.className = "CheckBoxColumn";
                 x = 0;
