@@ -2,38 +2,13 @@ var dataset;
 var treeData;
 
 
-function yearFilter(min, max) {Hmmm
-    return function (x) {
-        if (x.YEAR <= max && x.YEAR >= min) return x
-    }
-};
 d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) {
     dataset = data;
-
-    d3.select("body").selectAll("p").data(dataset).enter().append("p").text(function (d) {
-        return d.YEAR + " " + d.POPULATION
-
-    });
     barChart();
+    createCheckBoxes(3);
 });
 
-function setMinValue(minYear, p1) {
-    var x = document.getElementById(p1);
-    var y = document.getElementById(minYear);
-    x.innerHTML = y.value;
-}
 
-function setMaxValue(maxYear, p2) {
-    var x = document.getElementById(p2);
-    var y = document.getElementById(maxYear);
-    x.innerHTML = y.value;
-}
-
-window.onload = function () {
-    setMinValue('minYear', 'p1');
-    setMaxValue('maxYear', 'p2');
-}
-document.getElementById("clickMe").onclick = update;
 
 function settimespanandrun() {
     var firstYear = parseInt(minYear.value);
@@ -60,6 +35,7 @@ function update() {
 // Remove extra data
     newData.exit().remove();
 }
+
 /*
     rows = number of rows per column;
  */
@@ -81,10 +57,13 @@ var createCheckBoxes = function (treeData) {
             checkbox.value = property;
             checkbox.id = property;
             checkbox.className = "form-check-input"
-            checkbox.onclick = function(){console.log(this.id)};
+            checkbox.onclick = function () {
+                console.log(this.id)
+            };
             // Create Label for Each Checkbox
             var label = document.createElement('label')
             label.htmlFor = checkbox.id;
+            label.className = "checkBoxFont"
             label.appendChild(document.createTextNode(checkbox.name));
             checkboxLineItem.appendChild(checkbox);
             checkboxLineItem.appendChild(label);
@@ -92,12 +71,11 @@ var createCheckBoxes = function (treeData) {
 
             checkboxColumn.appendChild(checkboxLineItem);
             checkboxGroup.appendChild(checkboxColumn);
-            if (x >= treeData.rows) {
+           if (x >= treeData.rows) {
                 checkboxColumn = document.createElement("div");
                 checkboxColumn.className = "CheckBoxColumn";
                 x = 0;
             }
-
 
         }
     }
@@ -107,18 +85,23 @@ var createCheckBoxes = function (treeData) {
     console.log(property)
 }
 var w = 500;
-var h = 500;
-var barPadding =1;
-var barChart = function()
-{
+var h = 200;
+var barPadding = 1;
+var barChart = function () {
     var svg = d3.select("body").append("svg");
-    svg.attr("width",w).attr("height",h);
+    svg.attr("width", w).attr("height", h);
     svg.selectAll("rect")
         .data(dataset)
         .enter()
         .append("rect")
-        .attr("x",function(d,i){return i*(w/dataset.length);})
-        .attr("height",function (d){return d.RAPE*4;})
-        .attr("width",w/dataset.length-barPadding)
-        .attr("y",function (d) {return h-d.RAPE*4;})
+        .attr("x", function (d, i) {
+            return i * (w / dataset.length);
+        })
+        .attr("height", function (d) {
+            return d.RAPE * 4;
+        })
+        .attr("width", w / dataset.length - barPadding)
+        .attr("y", function (d) {
+            return h - d.RAPE * 4;
+        })
 }

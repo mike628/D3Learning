@@ -1,0 +1,31 @@
+
+Slider code to limit values using a slider
+<input id="clickMe" type="button" value="clickme"/>
+<input id="minYear" type="range" min="1975" max="2010" onchange="setMinValue('minYear','p1')">
+<label id="p1"></label>
+<input id="maxYear" type="range" min="1975" max="2010" onchange="setMaxValue('maxYear','p2')">
+<label id="p2"></label> </span>
+
+function setMinValue(minYear, p1) {
+    var x = document.getElementById(p1);
+    var y = document.getElementById(minYear);
+    x.innerHTML = y.value;
+}
+
+function setMaxValue(maxYear, p2) {
+    var x = document.getElementById(p2);
+    var y = document.getElementById(maxYear);
+    x.innerHTML = y.value;
+}
+
+document.getElementById("clickMe").onclick = update;
+window.onload = function () {
+    setMinValue('minYear', 'p1');
+    setMaxValue('maxYear', 'p2');
+}
+
+function yearFilter(min, max) {
+    return function (x) {
+        if (x.YEAR <= max && x.YEAR >= min) return x
+    }
+};
