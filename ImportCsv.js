@@ -85,10 +85,12 @@ var createCheckBoxes = function (treeData) {
     console.log(property)
 }
     var dataButtons = function() {
+    var propertyItem;
         var buttonGroup = document.createElement("div");
         buttonGroup.className = "checkboxGroup";
         var x = 0;
         for (var property in dataset[0]) {
+            propertyItem = property;
             if (dataset[0].hasOwnProperty(property)) {
                 var dataButton = document.createElement("button");
                 dataButton.className="attributeButton"
@@ -97,7 +99,7 @@ var createCheckBoxes = function (treeData) {
                 dataButton.id = property;
                 dataButton.innerHTML=property;
                 dataButton.onclick = function () {
-                    console.log(this.id)
+                    barChart(propertyItem);
                 }
                 buttonGroup.appendChild(dataButton);
             }
@@ -111,7 +113,11 @@ var createCheckBoxes = function (treeData) {
 var w = 500;
 var h = 200;
 var barPadding = 1;
-var barChart = function () {
+var barChart = function (propertyItem) {
+    if(propertyItem==null)
+    {
+       var propertyItem="ROBBERY";
+    }
     var svg = d3.select("body").append("svg");
     svg.attr("width", w).attr("height", h);
     svg.selectAll("rect")
@@ -122,10 +128,10 @@ var barChart = function () {
             return i * (w / dataset.length);
         })
         .attr("height", function (d) {
-            return d.RAPE * 4;
+            return d.propertyItem * 4;
         })
         .attr("width", w / dataset.length - barPadding)
         .attr("y", function (d) {
-            return h - d.RAPE * 4;
+            return h - d.propertyItem * 4;
         })
 }
