@@ -5,7 +5,7 @@ var treeData;
 d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) {
     dataset = data;
     barChart();
-    createCheckBoxes(3);
+    dataButtons(3);
 });
 
 
@@ -71,7 +71,7 @@ var createCheckBoxes = function (treeData) {
 
             checkboxColumn.appendChild(checkboxLineItem);
             checkboxGroup.appendChild(checkboxColumn);
-           if (x >= treeData) {
+            if (x >= treeData) {
                 checkboxColumn = document.createElement("div");
                 checkboxColumn.className = "CheckBoxColumn";
                 x = 0;
@@ -84,6 +84,30 @@ var createCheckBoxes = function (treeData) {
     parentDiv.insertBefore(checkboxGroup, sp2);
     console.log(property)
 }
+    var dataButtons = function() {
+        var buttonGroup = document.createElement("div");
+        buttonGroup.className = "checkboxGroup";
+        var x = 0;
+        for (var property in dataset[0]) {
+            if (dataset[0].hasOwnProperty(property)) {
+                var dataButton = document.createElement("button");
+                dataButton.className="attributeButton"
+                dataButton.name = "button" + property;
+                dataButton.value = property;
+                dataButton.id = property;
+                dataButton.innerHTML=property;
+                dataButton.onclick = function () {
+                    console.log(this.id)
+                }
+                buttonGroup.appendChild(dataButton);
+            }
+        }
+        var parentDiv = document.getElementById("afterCheckboxes").parentNode;
+        var sp2 = document.getElementById("afterCheckboxes");
+        parentDiv.insertBefore(buttonGroup, sp2);
+        console.log(property)
+    }
+
 var w = 500;
 var h = 200;
 var barPadding = 1;
