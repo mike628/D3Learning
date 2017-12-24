@@ -4,11 +4,19 @@ var treeData;
 
 d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) {
     dataset = data;
+    cleanData()
     barChart();
     dataButtons(3);
 });
-
-
+function cleanData() {
+    for (var i = 0; i <= dataset.length; i++)
+        for (var property in dataset[i]) {
+            if (dataset[i].hasOwnProperty(property)) {
+                dataset[i][property]=dataset[i][property].replace(/\D/g,'');
+console.log(dataset[i][property]);
+            }
+        }
+}
 
 function settimespanandrun() {
     var firstYear = parseInt(minYear.value);
@@ -19,22 +27,7 @@ function settimespanandrun() {
 
 };
 
-function update() {
-    var newdataset = settimespanandrun();
-    var newData = d3.select("body")
-        .selectAll("p")
-        .data(newdataset);
-// update old data
-    newData.text(function (d) {
-        return d.YEAR + " " + d.POPULATION
-    });
-// insert new data
-    newData.enter().append("p").text(function (d) {
-        return d.YEAR + " " + d.POPULATION
-    })
-// Remove extra data
-    newData.exit().remove();
-}
+
 
 /*
     rows = number of rows per column;
@@ -98,9 +91,8 @@ var createCheckBoxes = function (treeData) {
                 dataButton.value = property;
                 dataButton.id = property;
                 dataButton.innerHTML=property;
-                dataButton.onclick = function () {
-                    barChart(propertyItem);
-                }
+                dataButton.onclick = createClickHandler(property);
+
                 buttonGroup.appendChild(dataButton);
             }
         }
@@ -109,7 +101,10 @@ var createCheckBoxes = function (treeData) {
         parentDiv.insertBefore(buttonGroup, sp2);
         console.log(property)
     }
-
+var createClickHandler = function(property)
+{
+    return function(){updateBarChart(property);}
+}
 var w = 500;
 var h = 200;
 var barPadding = 1;
@@ -118,6 +113,7 @@ var barChart = function (propertyItem) {
     {
        var propertyItem="ROBBERY";
     }
+
     var svg = d3.select("body").append("svg");
     svg.attr("width", w).attr("height", h);
     svg.selectAll("rect")
@@ -128,10 +124,35 @@ var barChart = function (propertyItem) {
             return i * (w / dataset.length);
         })
         .attr("height", function (d) {
-            return d.propertyItem * 4;
+            return d[propertyItem] * 4;
         })
         .attr("width", w / dataset.length - barPadding)
         .attr("y", function (d) {
-            return h - d.propertyItem * 4;
+            return h - d[propertyItem] * 4;
         })
+    svg.exit().remove();
+}
+
+var updateBarChart = function (propertyItem) {
+    if(propertyItem==null)
+    {
+        var propertyItem="ROBBERY";
+    }
+
+    var svg = d3.select("body").append("svg");
+    svg.attr("width", w).attr("height", h);
+    svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .attr("x", function (d, i) {
+            return i * (w / dataset.length);
+        })
+        .attr("height", function (d) {
+            return d[propertyItem] * 4;
+        })
+        .attr("width", w / dataset.length - barPadding)
+        .attr("y", function (d) {
+            return h - d[propertyItem] * 4;
+        })
+    svg.exit().remove();
 }
