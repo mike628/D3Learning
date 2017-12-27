@@ -82,7 +82,9 @@ var updateBarChart = function (propertyItem) {
 
     var y = d3.scaleLinear()
         .range([h, 0]);
-    y.domain([0, d3.max(dataset, function(d) { return d[propertyItem]; })]);
+    y.domain([0, d3.max(dataset, function (d) {
+        return d[propertyItem];
+    })]);
 
     if (propertyItem == null) {
         var propertyItem = "ROBBERY";
@@ -96,13 +98,13 @@ var updateBarChart = function (propertyItem) {
             return i * (w / dataset.length);
 
         })
-        .attr("height", function(d) { return h - y(d[propertyItem]); })
-
-
-
+        .attr("height", function (d) {
+            return h - y(d[propertyItem]);
+        })
 
         .attr("width", w / dataset.length - barPadding)
-        .attr("y", function(d) { return y(d[propertyItem]); })
-
+        .attr("y", function (d) {
+            return y(d[propertyItem]);
+        })
 
 }
