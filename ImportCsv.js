@@ -49,7 +49,41 @@ var createClickHandler = function (property) {
         updateBarChart(property);
     }
 }
-var w = 500;
+
+function handleMouseOver(d, i) {
+    // Add interactivity
+    let myLabel = d[this];
+    let myCatagory = this;
+    console.log(myLabel);
+    var svg = d3.select("svg");
+
+    // Use D3 to select element, change color and size
+    var text = svg.selectAll("text")
+        .data(d[myCatagory])
+        .enter()
+        .append("text")
+        .attr("id",i);
+    var textLabels = text
+        .attr("x", function () {
+            return w - 50;
+        })
+
+        .attr("y", function () {
+            return h - 30;
+        })
+        .text(function () {
+            return myLabel;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "20px")
+        .attr("fill", "red");
+    // Specify where to put label of text
+}
+function handleMouseOut(d, i) {
+
+    d3.select("#"+i).remove();  // Remove text location
+}
+var w = 800;
 var h = 200;
 var barPadding = 1;
 var barChart = function (propertyItem) {
@@ -63,6 +97,7 @@ var barChart = function (propertyItem) {
         .data(dataset)
         .enter()
         .append("rect")
+        .attr("class", "bar")
         .attr("x", function (d, i) {
             return i * (w / dataset.length);
         })
@@ -73,6 +108,8 @@ var barChart = function (propertyItem) {
         .attr("y", function (d) {
             return h - d[propertyItem] * 4;
         })
+        .on("mouseover", handleMouseOver.bind(propertyItem))
+        .on("mouseout", handleMouseOut);
     svg.exit().remove();
 }
 
