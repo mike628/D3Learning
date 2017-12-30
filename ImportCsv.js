@@ -3,6 +3,7 @@ var treeData;
 
 d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) {
     dataset = data;
+   redefineDataset();
     cleanData()
     barChart();
     dataButtons(3);
@@ -52,25 +53,19 @@ var createClickHandler = function (property) {
 
 function handleMouseOver(d, i) {
     // Add interactivity
-    let myLabel = d[this];
-    let myCatagory = this;
-    console.log(myLabel);
+    let myLabel = d['ROBBERY'];
     var svg = d3.select("svg");
 
     // Use D3 to select element, change color and size
     var text = svg.selectAll("text")
-        .data(d[myCatagory])
+        .data([d['ROBBERY']])
         .enter()
         .append("text")
-        .attr("id",i);
+        .attr("id","t"+i);
     var textLabels = text
-        .attr("x", function () {
-            return w - 50;
-        })
+        .attr("x", w-50)
 
-        .attr("y", function () {
-            return h - 30;
-        })
+        .attr("y", h-30)
         .text(function () {
             return myLabel;
         })
@@ -81,7 +76,7 @@ function handleMouseOver(d, i) {
 }
 function handleMouseOut(d, i) {
 
-    d3.select("#"+i).remove();  // Remove text location
+    d3.select("#t"+i).remove();  // Remove text location
 }
 var w = 800;
 var h = 200;
@@ -101,6 +96,7 @@ var barChart = function (propertyItem) {
         .attr("x", function (d, i) {
             return i * (w / dataset.length);
         })
+
         .attr("height", function (d) {
             return d[propertyItem] * 4;
         })
@@ -108,11 +104,31 @@ var barChart = function (propertyItem) {
         .attr("y", function (d) {
             return h - d[propertyItem] * 4;
         })
-        .on("mouseover", handleMouseOver.bind(propertyItem))
-        .on("mouseout", handleMouseOut);
+        //.on("mouseover", handleMouseOver)
+
+        //.on("mouseover", handleMouseOver.bind(propertyItem))
+       // .on("mouseout", handleMouseOut);
     svg.exit().remove();
 }
+var arr = [];
+function redefineDataset()
+{
+    var a = new Array();
 
+    for (var property in dataset[0]) {
+        propertyItem = property;
+        if (dataset[0].hasOwnProperty(property)) {
+            a[propertyItem] = new Array();
+            for(i=0;i<dataset.length;i++)
+            {
+                if(dataset[i].hasOwnProperty(propertyItem))
+                {
+                    a[propertyItem].push(dataset[i][property]);
+                }
+            }
+    }
+
+}};
 var updateBarChart = function (propertyItem) {
     var x = d3.scaleBand()
         .range([0, w], .1);
@@ -138,10 +154,30 @@ var updateBarChart = function (propertyItem) {
         .attr("height", function (d) {
             return h - y(d[propertyItem]);
         })
-
         .attr("width", w / dataset.length - barPadding)
         .attr("y", function (d) {
             return y(d[propertyItem]);
         })
+        //.on("mouseover", handleMouseOver)
+       // .on("mouseout", handleMouseOut);
+    svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .text(function(d) {
+            return d[propertyItem];
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function(d, i) {
+            return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
+        })
+        .attr("y", function(d) {
+            return h - (d[propertyItem] * 4) + 14;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("fill", "white");
+
+
 
 }
