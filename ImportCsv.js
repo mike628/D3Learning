@@ -3,7 +3,7 @@ var treeData;
 
 d3.csv("./Datasets/Anne_Arundel_County_Crime_Rate_By_Type.csv", function (data) {
     dataset = data;
-   redefineDataset();
+    dataset = redefineDataset();
     cleanData()
     barChart();
     dataButtons(3);
@@ -27,20 +27,18 @@ var dataButtons = function () {
     var buttonGroup = document.createElement("div");
     buttonGroup.className = "checkboxGroup";
     var x = 0;
-    for (var property in dataset[0]) {
-        propertyItem = property;
-        if (dataset[0].hasOwnProperty(property)) {
-            var dataButton = document.createElement("button");
-            dataButton.className = "attributeButton"
-            dataButton.name = "button" + property;
-            dataButton.value = property;
-            dataButton.id = property;
-            dataButton.innerHTML = property;
-            dataButton.onclick = createClickHandler(property);
+    d.forEach(function (element) {
+        var dataButton = document.createElement("button");
+        dataButton.className = "attributeButton"
+        dataButton.name = "button" + element;
+        dataButton.value = element;
+        dataButton.id = element;
+        dataButton.innerHTML = element;
+        dataButton.onclick = createClickHandler(element);
 
-            buttonGroup.appendChild(dataButton);
-        }
-    }
+        buttonGroup.appendChild(dataButton);
+    })
+
     var parentDiv = document.getElementById("afterCheckboxes").parentNode;
     var sp2 = document.getElementById("afterCheckboxes");
     parentDiv.insertBefore(buttonGroup, sp2);
@@ -61,11 +59,11 @@ function handleMouseOver(d, i) {
         .data([d['ROBBERY']])
         .enter()
         .append("text")
-        .attr("id","t"+i);
+        .attr("id", "t" + i);
     var textLabels = text
-        .attr("x", w-50)
+        .attr("x", w - 50)
 
-        .attr("y", h-30)
+        .attr("y", h - 30)
         .text(function () {
             return myLabel;
         })
@@ -74,10 +72,12 @@ function handleMouseOver(d, i) {
         .attr("fill", "red");
     // Specify where to put label of text
 }
+
 function handleMouseOut(d, i) {
 
-    d3.select("#t"+i).remove();  // Remove text location
+    d3.select("#t" + i).remove();  // Remove text location
 }
+
 var w = 800;
 var h = 200;
 var barPadding = 1;
@@ -89,46 +89,57 @@ var barChart = function (propertyItem) {
     var svg = d3.select("body").append("svg");
     svg.attr("width", w).attr("height", h);
     svg.selectAll("rect")
-        .data(dataset)
+        .data(dataset[1])
         .enter()
         .append("rect")
         .attr("class", "bar")
         .attr("x", function (d, i) {
-            return i * (w / dataset.length);
+            return i * (w / dataset[1].length);
         })
 
         .attr("height", function (d) {
-            return d[propertyItem] * 4;
+            return d * 4;
         })
-        .attr("width", w / dataset.length - barPadding)
+        .attr("width", w / dataset[1].length - barPadding)
         .attr("y", function (d) {
-            return h - d[propertyItem] * 4;
+            return h - d * 4;
         })
-        //.on("mouseover", handleMouseOver)
+    //.on("mouseover", handleMouseOver)
 
-        //.on("mouseover", handleMouseOver.bind(propertyItem))
-       // .on("mouseout", handleMouseOut);
+    //.on("mouseover", handleMouseOver.bind(propertyItem))
+    // .on("mouseout", handleMouseOut);
     svg.exit().remove();
 }
 var arr = [];
-function redefineDataset()
-{
-    var a = new Array();
+var d = new Array();
+
+function redefineDataset() {
+    var a = [];
 
     for (var property in dataset[0]) {
-        propertyItem = property;
+
         if (dataset[0].hasOwnProperty(property)) {
-            a[propertyItem] = new Array();
-            for(i=0;i<dataset.length;i++)
-            {
-                if(dataset[i].hasOwnProperty(propertyItem))
-                {
-                    a[propertyItem].push(dataset[i][property]);
-                }
-            }
+            d.push(property);
+            a.push(new Array());
+        }
+
     }
 
-}};
+        for (j = 0; j < dataset.length; j++) {
+           for(i=0;i<d.length;i++)
+           {
+
+               if (dataset[j].hasOwnProperty(d[i])) {
+                   propertyItem = d[i];
+
+                   a[i].push(dataset[j][propertyItem])
+
+               }
+           }
+        }
+    return a;
+}
+
 var updateBarChart = function (propertyItem) {
     var x = d3.scaleBand()
         .range([0, w], .1);
@@ -158,26 +169,24 @@ var updateBarChart = function (propertyItem) {
         .attr("y", function (d) {
             return y(d[propertyItem]);
         })
-        //.on("mouseover", handleMouseOver)
-       // .on("mouseout", handleMouseOut);
+    //.on("mouseover", handleMouseOver)
+    // .on("mouseout", handleMouseOut);
     svg.selectAll("text")
         .data(dataset)
         .enter()
         .append("text")
-        .text(function(d) {
+        .text(function (d) {
             return d[propertyItem];
         })
         .attr("text-anchor", "middle")
-        .attr("x", function(d, i) {
+        .attr("x", function (d, i) {
             return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
         })
-        .attr("y", function(d) {
+        .attr("y", function (d) {
             return h - (d[propertyItem] * 4) + 14;
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "11px")
         .attr("fill", "white");
-
-
 
 }
