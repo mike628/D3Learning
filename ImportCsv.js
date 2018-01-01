@@ -13,7 +13,13 @@ function cleanData() {
     for (var i = 0; i <= dataset.length; i++)
         for (var property in dataset[i]) {
             if (dataset[i].hasOwnProperty(property)) {
-                dataset[i][property] = dataset[i][property].replace(/\D/g, '');
+                if(dataset[i][property]==="")
+                {
+                    dataset[i][property]=1
+                }
+                else {
+                    dataset[i][property] = dataset[i][property].replace(/\D/g, '');
+                }
             }
         }
 }
@@ -27,14 +33,14 @@ var dataButtons = function () {
     var buttonGroup = document.createElement("div");
     buttonGroup.className = "checkboxGroup";
     var x = 0;
-    d.forEach(function (element) {
+    cat.forEach(function (element,i) {
         var dataButton = document.createElement("button");
         dataButton.className = "attributeButton"
         dataButton.name = "button" + element;
         dataButton.value = element;
-        dataButton.id = element;
+        dataButton.id = "d"+i;
         dataButton.innerHTML = element;
-        dataButton.onclick = createClickHandler(element);
+        dataButton.onclick = createClickHandler(dataButton.id);
 
         buttonGroup.appendChild(dataButton);
     })
@@ -43,9 +49,9 @@ var dataButtons = function () {
     var sp2 = document.getElementById("afterCheckboxes");
     parentDiv.insertBefore(buttonGroup, sp2);
 }
-var createClickHandler = function (property) {
+var createClickHandler = function (id) {
     return function () {
-        updateBarChart(property);
+        updateBarChart(id);
     }
 }
 
@@ -85,6 +91,14 @@ var barChart = function (propertyItem) {
     if (propertyItem == null) {
         var propertyItem = "ROBBERY";
     }
+    var x = d3.scaleBand()
+        .range([0, w], .1);
+
+    var y = d3.scaleLinear()
+        .range([h, 0]);
+    y.domain([0, d3.max(dataset[1], function (d) {
+        return d;
+    })]);
 
     var svg = d3.select("body").append("svg");
     svg.attr("width", w).attr("height", h);
@@ -95,15 +109,32 @@ var barChart = function (propertyItem) {
         .attr("class", "bar")
         .attr("x", function (d, i) {
             return i * (w / dataset[1].length);
-        })
 
+        })
         .attr("height", function (d) {
-            return d * 4;
+            return h - y(d);
         })
         .attr("width", w / dataset[1].length - barPadding)
         .attr("y", function (d) {
-            return h - d * 4;
+            return y(d);
         })
+    svg.selectAll("text")
+        .data(dataset[1])
+        .enter()
+        .append("text")
+        .text(function (d) {
+            return d;
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function (d, i) {
+            return i * (w / dataset[1].length) + (w / dataset[1].length - barPadding) / 2;
+        })
+        .attr("y", function (d) {
+            return h - (d * 4) + 14;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("fill", "white");
     //.on("mouseover", handleMouseOver)
 
     //.on("mouseover", handleMouseOver.bind(propertyItem))
@@ -111,7 +142,7 @@ var barChart = function (propertyItem) {
     svg.exit().remove();
 }
 var arr = [];
-var d = new Array();
+var cat = new Array();
 
 function redefineDataset() {
     var a = [];
@@ -119,18 +150,18 @@ function redefineDataset() {
     for (var property in dataset[0]) {
 
         if (dataset[0].hasOwnProperty(property)) {
-            d.push(property);
+            cat.push(property);
             a.push(new Array());
         }
 
     }
 
         for (j = 0; j < dataset.length; j++) {
-           for(i=0;i<d.length;i++)
+           for(i=0;i<cat.length;i++)
            {
 
-               if (dataset[j].hasOwnProperty(d[i])) {
-                   propertyItem = d[i];
+               if (dataset[j].hasOwnProperty(cat[i])) {
+                   propertyItem = cat[i];
 
                    a[i].push(dataset[j][propertyItem])
 
@@ -140,14 +171,17 @@ function redefineDataset() {
     return a;
 }
 
-var updateBarChart = function (propertyItem) {
+var updateBarChart = function (id) {
+    var id = id.substr(1);
+    var tempDataset
+    tempDataset=dataset[parseInt(id)]
     var x = d3.scaleBand()
         .range([0, w], .1);
 
     var y = d3.scaleLinear()
         .range([h, 0]);
-    y.domain([0, d3.max(dataset, function (d) {
-        return d[propertyItem];
+    y.domain([0, d3.max(tempDataset, function (d) {
+        return d;
     })]);
 
     if (propertyItem == null) {
@@ -157,33 +191,33 @@ var updateBarChart = function (propertyItem) {
     var svg = d3.select("svg");
     svg.attr("width", w).attr("height", h);
     svg.selectAll("rect")
-        .data(dataset)
+        .data(tempDataset)
         .attr("x", function (d, i) {
-            return i * (w / dataset.length);
+            return i * (w / tempDataset.length);
 
         })
         .attr("height", function (d) {
-            return h - y(d[propertyItem]);
+            return h - y(d);
         })
-        .attr("width", w / dataset.length - barPadding)
+        .attr("width", w / tempDataset.length - barPadding)
         .attr("y", function (d) {
-            return y(d[propertyItem]);
+            return y(d);
         })
     //.on("mouseover", handleMouseOver)
     // .on("mouseout", handleMouseOut);
     svg.selectAll("text")
-        .data(dataset)
-        .enter()
+        .data(tempDataset)
+        //.enter()
         .append("text")
         .text(function (d) {
-            return d[propertyItem];
+            return d;
         })
         .attr("text-anchor", "middle")
         .attr("x", function (d, i) {
-            return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
+            return i * (w / tempDataset.length) + (w / tempDataset.length - barPadding) / 2;
         })
         .attr("y", function (d) {
-            return h - (d[propertyItem] * 4) + 14;
+            return h - (d * 4) + 14;
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "11px")
