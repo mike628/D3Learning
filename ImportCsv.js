@@ -130,10 +130,10 @@ var barChart = function (propertyItem) {
             return i * (w / dataset[1].length) + (w / dataset[1].length - barPadding) / 2;
         })
         .attr("y", function (d) {
-            return h - (d * 4) + 14;
+            return y(d)+10;
         })
         .attr("font-family", "sans-serif")
-        .attr("font-size", "11px")
+        .attr("font-size", "8px")
         .attr("fill", "white");
     //.on("mouseover", handleMouseOver)
 
@@ -201,7 +201,7 @@ var updateBarChart = function (id) {
         })
         .attr("width", w / tempDataset.length - barPadding)
         .attr("y", function (d) {
-            return y(d);
+            return y(d)+10;
         })
     //.on("mouseover", handleMouseOver)
     // .on("mouseout", handleMouseOut);
