@@ -87,10 +87,8 @@ function handleMouseOut(d, i) {
 var w = 800;
 var h = 200;
 var barPadding = 1;
-var barChart = function (propertyItem) {
-    if (propertyItem == null) {
-        var propertyItem = "ROBBERY";
-    }
+var barChart = function () {
+
     var x = d3.scaleBand()
         .range([0, w], .1);
 
@@ -201,23 +199,23 @@ var updateBarChart = function (id) {
         })
         .attr("width", w / tempDataset.length - barPadding)
         .attr("y", function (d) {
-            return y(d)+10;
+            return y(d);
         })
     //.on("mouseover", handleMouseOver)
     // .on("mouseout", handleMouseOut);
     svg.selectAll("text")
         .data(tempDataset)
-        //.enter()
-        .append("text")
         .text(function (d) {
             return d;
         })
+
         .attr("text-anchor", "middle")
         .attr("x", function (d, i) {
             return i * (w / tempDataset.length) + (w / tempDataset.length - barPadding) / 2;
         })
         .attr("y", function (d) {
-            return h - (d * 4) + 14;
+            console.log(d+" "+y(d)+10)
+            return y(d)+10;
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "11px")
