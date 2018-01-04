@@ -13,12 +13,12 @@ function cleanData() {
     for (var i = 0; i <= dataset.length; i++)
         for (var property in dataset[i]) {
             if (dataset[i].hasOwnProperty(property)) {
-                if(dataset[i][property]==="")
-                {
-                    dataset[i][property]=1
+                if (dataset[i][property] === "") {
+                    dataset[i][property] = 1
                 }
                 else {
-                    dataset[i][property] = dataset[i][property].replace(/\D/g, '');
+                    dataset[i][property] = dataset[i][property].replace(/\%/g, '');;
+                    dataset[i][property]=Math.abs(dataset[i][property]);
                 }
             }
         }
@@ -33,12 +33,12 @@ var dataButtons = function () {
     var buttonGroup = document.createElement("div");
     buttonGroup.className = "checkboxGroup";
     var x = 0;
-    cat.forEach(function (element,i) {
+    cat.forEach(function (element, i) {
         var dataButton = document.createElement("button");
         dataButton.className = "attributeButton"
         dataButton.name = "button" + element;
         dataButton.value = element;
-        dataButton.id = "d"+i;
+        dataButton.id = "d" + i;
         dataButton.innerHTML = element;
         dataButton.onclick = createClickHandler(dataButton.id);
 
@@ -94,9 +94,11 @@ var barChart = function () {
 
     var y = d3.scaleLinear()
         .range([h, 0]);
-    y.domain([0, d3.max(dataset[1], function (d) {
-        return d;
-    })]);
+y.domain(d3.extent(dataset[1], function(d){return d}))
+
+   // y.domain([0, d3.max(dataset[1], function (d) {
+     //   return d;
+  //  })]);
 
     var svg = d3.select("body").append("svg");
     svg.attr("width", w).attr("height", h);
@@ -128,7 +130,7 @@ var barChart = function () {
             return i * (w / dataset[1].length) + (w / dataset[1].length - barPadding) / 2;
         })
         .attr("y", function (d) {
-            return y(d)+10;
+            return y(d) + 10;
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "8px")
@@ -154,68 +156,62 @@ function redefineDataset() {
 
     }
 
-        for (j = 0; j < dataset.length; j++) {
-           for(i=0;i<cat.length;i++)
-           {
+    for (j = 0; j < dataset.length; j++) {
+        for (i = 0; i < cat.length; i++) {
 
-               if (dataset[j].hasOwnProperty(cat[i])) {
-                   propertyItem = cat[i];
+            if (dataset[j].hasOwnProperty(cat[i])) {
+                propertyItem = cat[i];
 
-                   a[i].push(dataset[j][propertyItem])
+                a[i].push(dataset[j][propertyItem])
 
-               }
-           }
+            }
         }
+    }
     return a;
 }
 
 var updateBarChart = function (id) {
     var id = id.substr(1);
     var tempDataset
-    tempDataset=dataset[parseInt(id)]
-    var x = d3.scaleBand()
-        .range([0, w], .1);
-
-    var y = d3.scaleLinear()
-        .range([h, 0]);
-    y.domain([0, d3.max(tempDataset, function (d) {
-        return d;
-    })]);
-
-    if (propertyItem == null) {
-        var propertyItem = "ROBBERY";
-    }
-
+    tempDataset = dataset[parseInt(id)]
     var svg = d3.select("svg");
     svg.attr("width", w).attr("height", h);
+    var xScale = d3.scaleBand()
+        .domain(d3.range(tempDataset.length))
+        .range([0, w], 0.05);
+    var yScale = d3.scaleLinear()
+        .domain([d3.min(tempDataset), d3.max(tempDataset)])
+        .range([0, h]);
     svg.selectAll("rect")
         .data(tempDataset)
-        .attr("x", function (d, i) {
-            return i * (w / tempDataset.length);
 
+        .attr("x", function(d, i) {
+            return xScale(i);
         })
-        .attr("height", function (d) {
-            return h - y(d);
+        .attr("y", function(d) {
+            return h - yScale(d);
         })
-        .attr("width", w / tempDataset.length - barPadding)
-        .attr("y", function (d) {
-            return y(d);
+        .attr("width", xScale.bandwidth()-barPadding)
+        .attr("height", function(d) {
+            d = Math.abs(d);
+            return Math.abs(yScale(d));
         })
-    //.on("mouseover", handleMouseOver)
-    // .on("mouseout", handleMouseOut);
+        .attr("fill", function(d) {
+            return "rgb(0, 0, " + (d * 10) + ")";
+        });
+
     svg.selectAll("text")
         .data(tempDataset)
-        .text(function (d) {
+        //.enter()
+        //.append("text")
+        .text(function(d) {
             return d;
         })
-
-        .attr("text-anchor", "middle")
-        .attr("x", function (d, i) {
-            return i * (w / tempDataset.length) + (w / tempDataset.length - barPadding) / 2;
+        .attr("x", function(d, i) {
+            return xScale(i) + xScale.bandwidth() / 2;
         })
-        .attr("y", function (d) {
-            console.log(d+" "+y(d)+10)
-            return y(d)+10;
+        .attr("y", function(d) {
+            return h - yScale(d) + 14;
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "11px")
